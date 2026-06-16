@@ -22,18 +22,15 @@ export async function GET(request: Request) {
       } = await supabase.auth.getUser();
 
       if (user) {
-        const { data: clinic } = await supabase
+        const { count } = await supabase
           .from("clinics")
-          .select("id")
-          .eq("owner_id", user.id)
-          .order("created_at", { ascending: true })
-          .limit(1)
-          .maybeSingle();
+          .select("id", { count: "exact", head: true })
+          .eq("owner_id", user.id);
 
-        if (clinic) {
-          return NextResponse.redirect(
-            `${origin}/clinic/${clinic.id}/dashboard`
-          );
+        // One clinic or many, the clinics index is the home base. It redirects
+        // first-timers with none straight to clinic creation.
+        if (count && count > 0) {
+          return NextResponse.redirect(`${origin}/clinics`);
         }
       }
 

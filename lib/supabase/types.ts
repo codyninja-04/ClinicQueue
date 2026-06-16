@@ -24,6 +24,13 @@ export type Database = {
           phone: string | null;
           address: string | null;
           created_at: string | null;
+          brand_color: string;
+          welcome_message: string | null;
+          logo_url: string | null;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          subscription_status: string;
+          plan: string | null;
         };
         Insert: {
           id?: string;
@@ -35,6 +42,13 @@ export type Database = {
           phone?: string | null;
           address?: string | null;
           created_at?: string | null;
+          brand_color?: string;
+          welcome_message?: string | null;
+          logo_url?: string | null;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          subscription_status?: string;
+          plan?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["clinics"]["Insert"]>;
         Relationships: [];
@@ -116,6 +130,30 @@ export type Database = {
       close_queue: {
         Args: { p_clinic_id: string };
         Returns: undefined;
+      };
+      clinic_day_summary: {
+        Args: { p_clinic_id: string; p_date: string };
+        Returns: {
+          total_joined: number;
+          served: number;
+          no_shows: number;
+          still_active: number;
+          avg_wait_minutes: number | null;
+          avg_consult_minutes: number | null;
+          busiest_hour: number | null;
+        }[];
+      };
+      clinic_hourly_stats: {
+        Args: { p_clinic_id: string; p_from: string; p_to: string };
+        Returns: { hour: number; joined: number }[];
+      };
+      clinic_daily_trend: {
+        Args: { p_clinic_id: string; p_from: string; p_to: string };
+        Returns: {
+          day: string;
+          served: number;
+          avg_wait_minutes: number | null;
+        }[];
       };
     };
   };

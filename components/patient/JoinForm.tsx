@@ -7,6 +7,7 @@ import { TicketConfirmation } from "./TicketConfirmation";
 type Props = {
   clinicId: string;
   clinicName: string;
+  brandColor?: string;
 };
 
 type Joined = {
@@ -17,7 +18,7 @@ type Joined = {
   statusHref: string;
 };
 
-export function JoinForm({ clinicId, clinicName }: Props) {
+export function JoinForm({ clinicId, clinicName, brandColor }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -69,8 +70,10 @@ export function JoinForm({ clinicId, clinicName }: Props) {
   }
 
   if (joined) {
-    return <TicketConfirmation {...joined} />;
+    return <TicketConfirmation {...joined} brandColor={brandColor} />;
   }
+
+  const brandStyle = brandColor ? { backgroundColor: brandColor } : undefined;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -134,7 +137,8 @@ export function JoinForm({ clinicId, clinicName }: Props) {
       <button
         type="submit"
         disabled={loading || !name || !phone}
-        className="w-full rounded-xl bg-brand px-4 py-4 text-lg font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50"
+        style={brandStyle}
+        className="w-full rounded-xl bg-brand px-4 py-4 text-lg font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "Joining…" : `Join the queue at ${clinicName}`}
       </button>

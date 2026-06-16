@@ -15,8 +15,12 @@ Built with **Next.js 14**, **TypeScript**, **Supabase**, **Tailwind CSS**, and *
 | Landing page | `/` | Clinic owners deciding to sign up |
 | Magic-link login | `/login` | Clinic staff |
 | Create clinic | `/clinic/new` | New owners |
+| Clinics index | `/clinics` | Owners with one or more clinics |
 | Staff dashboard | `/clinic/[clinicId]/dashboard` | Front desk, all day |
+| Daily summary | `/clinic/[clinicId]/summary` | Owners, end of day |
+| Analytics | `/clinic/[clinicId]/analytics` | Owners, peak hours + wait trends |
 | Setup + QR code | `/clinic/[clinicId]/setup` | Owners, once |
+| Billing | `/clinic/[clinicId]/billing` | Owners, subscription |
 | Waiting-room TV | `/clinic/[clinicId]/queue` | A screen in the waiting area |
 | Patient join form | `/join/[clinicId]` | Patients, from the QR |
 | Patient status | `/status/[ticketId]` | Patients, while they wait |
@@ -31,10 +35,11 @@ cp .env.local.example .env.local
 # Fill in Supabase and Twilio credentials
 ```
 
-Run the database migration: open the Supabase SQL editor, paste
-`supabase/migrations/001_initial_schema.sql`, and run it. This creates the
-tables, the `live_queue` view, the atomic `join_queue` function, and all RLS
-policies.
+Run the database migrations in order: open the Supabase SQL editor and run
+`supabase/migrations/001_initial_schema.sql` (tables, the `live_queue` view, the
+atomic `join_queue` function, and all RLS policies), then
+`supabase/migrations/002_summary_branding_billing.sql` (reporting functions plus
+the branding and Stripe columns).
 
 Then:
 
@@ -56,7 +61,17 @@ TWILIO_AUTH_TOKEN=
 TWILIO_PHONE_NUMBER=
 
 NEXT_PUBLIC_APP_URL=            # e.g. https://clinicqueue.vercel.app
+
+# Optional — billing stays off until these are set
+STRIPE_SECRET_KEY=
+STRIPE_PRICE_ID=
+STRIPE_WEBHOOK_SECRET=
 ```
+
+Billing is entirely optional. With no Stripe keys, the billing page shows a
+"not configured" note and everything else runs normally. To enable it, point a
+Stripe webhook at `/api/billing/webhook` for the `checkout.session.completed`
+and `customer.subscription.*` events.
 
 ---
 
@@ -101,6 +116,6 @@ and confirm the SMS arrives.
 - **Phase 1 — MVP:** magic-link auth, clinic creation, QR codes, patient join,
   join SMS, live dashboard with Call Next, realtime, called SMS. ✅
 - **Phase 2 — operations:** almost-ready SMS, skip/left states, waiting-room TV
-  screen, open/close controls, daily summary.
+  screen, open/close controls, daily summary. ✅
 - **Phase 3 — monetization:** multi-clinic accounts, Stripe billing, custom
-  branding, analytics.
+  branding on the patient page, peak-hours + wait-time analytics. ✅

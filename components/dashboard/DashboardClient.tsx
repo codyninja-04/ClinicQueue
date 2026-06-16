@@ -37,18 +37,38 @@ export function DashboardClient({ clinic }: { clinic: Clinic }) {
     <main className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <div>
-            <h1 className="text-lg font-semibold text-ink">{clinic.name}</h1>
-            <p className="flex items-center gap-1.5 text-sm text-slate-400">
-              <span
-                className={`h-2 w-2 rounded-full ${
-                  isOpen ? "bg-emerald-500" : "bg-slate-300"
-                }`}
-              />
-              {isOpen ? "Queue open" : "Queue closed"}
-            </p>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/clinics"
+              className="text-sm text-slate-400 transition hover:text-ink"
+            >
+              ←
+            </Link>
+            <div>
+              <h1 className="text-lg font-semibold text-ink">{clinic.name}</h1>
+              <p className="flex items-center gap-1.5 text-sm text-slate-400">
+                <span
+                  className={`h-2 w-2 rounded-full ${
+                    isOpen ? "bg-emerald-500" : "bg-slate-300"
+                  }`}
+                />
+                {isOpen ? "Queue open" : "Queue closed"}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1">
+            <Link
+              href={`/clinic/${clinic.id}/summary`}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-ink"
+            >
+              Today
+            </Link>
+            <Link
+              href={`/clinic/${clinic.id}/analytics`}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-ink"
+            >
+              Analytics
+            </Link>
             <Link
               href={`/clinic/${clinic.id}/setup`}
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-ink"
@@ -56,11 +76,17 @@ export function DashboardClient({ clinic }: { clinic: Clinic }) {
               Setup
             </Link>
             <Link
+              href={`/clinic/${clinic.id}/billing`}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-ink"
+            >
+              Billing
+            </Link>
+            <Link
               href={`/clinic/${clinic.id}/queue`}
               target="_blank"
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-ink"
             >
-              TV screen ↗
+              TV ↗
             </Link>
             <button
               onClick={toggleQueue}

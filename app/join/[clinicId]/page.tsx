@@ -12,7 +12,7 @@ export default async function JoinPage({
 
   const { data: clinic } = await supabase
     .from("clinics")
-    .select("id, name, is_open")
+    .select("id, name, is_open, brand_color, welcome_message")
     .eq("id", params.clinicId)
     .maybeSingle();
 
@@ -30,12 +30,27 @@ export default async function JoinPage({
             body="The queue is not open right now. Please check back when the clinic opens its doors."
           />
         ) : (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-6">
-              <p className="text-sm text-slate-400">Join the queue at</p>
-              <h1 className="text-2xl font-semibold text-ink">{clinic.name}</h1>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div
+              className="h-1.5 w-full"
+              style={{ backgroundColor: clinic.brand_color || "#0d9488" }}
+            />
+            <div className="p-6">
+              <div className="mb-6">
+                <p className="text-sm text-slate-400">Join the queue at</p>
+                <h1 className="text-2xl font-semibold text-ink">{clinic.name}</h1>
+                {clinic.welcome_message && (
+                  <p className="mt-2 text-sm text-slate-500">
+                    {clinic.welcome_message}
+                  </p>
+                )}
+              </div>
+              <JoinForm
+                clinicId={clinic.id}
+                clinicName={clinic.name}
+                brandColor={clinic.brand_color || undefined}
+              />
             </div>
-            <JoinForm clinicId={clinic.id} clinicName={clinic.name} />
           </div>
         )}
       </div>

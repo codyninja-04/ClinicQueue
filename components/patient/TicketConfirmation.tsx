@@ -8,6 +8,7 @@ type Props = {
   position: number;
   waitMinutes: number;
   statusHref: string;
+  brandColor?: string;
 };
 
 export function TicketConfirmation({
@@ -16,6 +17,7 @@ export function TicketConfirmation({
   position,
   waitMinutes,
   statusHref,
+  brandColor,
 }: Props) {
   return (
     <div className="text-center">
@@ -47,7 +49,8 @@ export function TicketConfirmation({
 
       <Link
         href={statusHref}
-        className="mt-6 inline-block w-full rounded-lg bg-brand px-4 py-2.5 font-medium text-white transition hover:bg-brand-dark"
+        style={brandColor ? { backgroundColor: brandColor } : undefined}
+        className="mt-6 inline-block w-full rounded-lg bg-brand px-4 py-2.5 font-medium text-white transition hover:opacity-90"
       >
         Track my place in the queue
       </Link>

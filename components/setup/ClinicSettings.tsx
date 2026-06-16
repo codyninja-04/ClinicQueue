@@ -8,6 +8,8 @@ export function ClinicSettings({ clinic }: { clinic: Clinic }) {
   const [name, setName] = useState(clinic.name);
   const [avg, setAvg] = useState(String(clinic.avg_consult_minutes));
   const [address, setAddress] = useState(clinic.address ?? "");
+  const [brandColor, setBrandColor] = useState(clinic.brand_color || "#0d9488");
+  const [welcome, setWelcome] = useState(clinic.welcome_message ?? "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +27,10 @@ export function ClinicSettings({ clinic }: { clinic: Clinic }) {
         name: name.trim(),
         avg_consult_minutes: Math.max(1, Math.round(Number(avg) || 10)),
         address: address.trim() || null,
+        brand_color: /^#[0-9a-fA-F]{6}$/.test(brandColor)
+          ? brandColor
+          : "#0d9488",
+        welcome_message: welcome.trim() || null,
       })
       .eq("id", clinic.id);
 
@@ -82,6 +88,49 @@ export function ClinicSettings({ clinic }: { clinic: Clinic }) {
           onChange={(e) => setAddress(e.target.value)}
           className="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-ink outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
         />
+      </div>
+
+      <div className="border-t border-slate-100 pt-4">
+        <h4 className="text-sm font-semibold text-ink">
+          Patient page branding
+        </h4>
+        <p className="mt-0.5 text-sm text-slate-400">
+          How the join page looks when patients scan your QR.
+        </p>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Accent colour
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={brandColor}
+                onChange={(e) => setBrandColor(e.target.value)}
+                className="h-10 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-1"
+              />
+              <input
+                value={brandColor}
+                onChange={(e) => setBrandColor(e.target.value)}
+                className="w-28 rounded-lg border border-slate-300 px-3 py-2.5 text-sm uppercase text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Welcome message <span className="text-slate-400">(optional)</span>
+            </label>
+            <input
+              value={welcome}
+              onChange={(e) => setWelcome(e.target.value)}
+              maxLength={120}
+              placeholder="Walk-ins welcome — we'll text you."
+              className="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30"
+            />
+          </div>
+        </div>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
